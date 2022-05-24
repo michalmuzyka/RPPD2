@@ -1,0 +1,42 @@
+---
+title: "Przetwarzanie danych w języku R i Python"
+subtitle: "PD 2"
+author: "Szymon Koński Michal Muzyka"
+date: "27.04.2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Załadowanie potrzebnych bibliotek:
+```{r message=FALSE, warning=FALSE}
+library("knitr")
+library("rmarkdown")
+library("markdown")
+library(dplyr)
+library(data.table)
+```
+
+```{r strings , echo=FALSE}
+options(stringsAsFactors=FALSE)
+options(dplyr.summarise.inform = FALSE)
+```
+
+## Wczytanie danych
+```{r loadData, echo=TRUE}
+BibyclesPosts <- read.csv("bicycles/Posts.csv")
+CoffeePosts <- read.csv("coffee/Posts.csv")
+UkrainaPosts <- read.csv("ukraina/Posts.csv")
+```
+
+```{r loadDataTable, echo=TRUE}
+TagsDT <- data.table(Tags)
+BadgesDT <-data.table(Badges)
+CommentsDT <-data.table(Comments)
+PostLinksDT <-data.table(PostLinks)
+PostsDT <-data.table(Posts)
+UsersDT <-data.table(Users)
+VotesDT <-data.table(Votes)
+```
