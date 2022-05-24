@@ -32,11 +32,27 @@ UkrainaPosts <- read.csv("ukraina/Posts.csv")
 ```
 
 ```{r loadDataTable, echo=TRUE}
-TagsDT <- data.table(Tags)
-BadgesDT <-data.table(Badges)
-CommentsDT <-data.table(Comments)
-PostLinksDT <-data.table(PostLinks)
-PostsDT <-data.table(Posts)
-UsersDT <-data.table(Users)
-VotesDT <-data.table(Votes)
+BibyclesPostsDT <-data.table(BibyclesPosts)
+CoffeePostsDT <-data.table(CoffeePosts)
+UkrainaPostsDT <-data.table(UkrainaPosts)
+```
+
+
+
+```{r}
+analyze_v1 <- function(posts) {
+  questions <- posts[PostTypeId == 1, .(Id, CDate = as.POSIXct(CreationDate,format="%Y-%m-%dT%H:%M:%OS"), Title, OwnerUserId)]
+  answers <- posts[PostTypeId == 2, .(Id, ParentId, CDate = as.POSIXct(CreationDate,format="%Y-%m-%dT%H:%M:%OS"), Body, OwnerUserId)]
+  names(answers) <- paste0("answers_", names(answers))
+  df <- questions[answers, on = c(Id = "answers_ParentId")]
+  df$diff_time <- difftime(df$answers_CDate, df$CDate, units = "days")
+  df <- df[, .(mint = min(diff_time), maxt = max(diff_time)), by=Id]
+  df <- df[is.finite(mint)]
+  diff_time_min <- df[, .(min = min(mint), max =  max(mint))]
+  diff_time_max <- df[, .(min = min(maxt), max =  max(maxt))]
+  res <- rbind(diff_time_min,  diff_time_max)
+  colnames(res) <- c("first answer", "last answer")
+  print(res)
+}
+analyze_v1(BibyclesPostsDT)
 ```
